@@ -28,10 +28,7 @@ And additional plugins coming soon! For documentation on building custom plugins
 - Raspberry Pi (4 | 3 | Zero 2 W)
     - Recommended to get 40 pin Pre Soldered Header
 - MicroSD Card (min 8 GB)
-- E-Ink Display: Pimoroni Inky Impression, available in 3 sizes:
-    - **[7.3 Inch Display](https://shop.pimoroni.com/products/inky-impression-7-3)**
-    - **[5.7 Inch Display](https://shop.pimoroni.com/products/inky-impression-5-7)**
-    - **[4 Inch Display](https://shop.pimoroni.com/products/inky-impression-4)**
+- E-Ink Display: Waveshare E-Ink Displays
 - Picture Frame or 3D Stand
 
 ## Installation
@@ -39,7 +36,7 @@ To install InkyPi, follow these steps:
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/fatihak/InkyPi.git
+    git clone https://github.com/SeanStew/InkyPi
     ```
 2. Navigate to the project directory:
     ```bash
