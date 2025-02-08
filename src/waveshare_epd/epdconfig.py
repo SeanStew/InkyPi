@@ -32,8 +32,6 @@ import logging
 import sys
 import time
 import subprocess
-import spidev
-import gpiozero
 
 from ctypes import *
 
@@ -51,6 +49,9 @@ class RaspberryPi:
     SCLK_PIN = 11
 
     def __init__(self):
+        import spidev
+        import gpiozero
+        
         self.SPI = spidev.SpiDev()
         self.GPIO_RST_PIN    = gpiozero.LED(self.RST_PIN)
         self.GPIO_DC_PIN     = gpiozero.LED(self.DC_PIN)
