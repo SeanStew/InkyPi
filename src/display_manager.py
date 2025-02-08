@@ -1,5 +1,4 @@
 import os
-from inky.auto import auto
 from waveshare_epd import epd7in3f
 from utils.image_utils import resize_image, change_orientation
 from plugins.plugin_registry import get_plugin_instance
