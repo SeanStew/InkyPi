@@ -1,5 +1,6 @@
 import os
 from inky.auto import auto
+from waveshare_epd import epd7in3f
 from utils.image_utils import resize_image, change_orientation
 from plugins.plugin_registry import get_plugin_instance
 
@@ -13,8 +14,8 @@ class DisplayManager:
         :param default_image: Path to the default image to display.
         """
         self.device_config = device_config
-        self.inky_display = auto()
-        self.inky_display.set_border(self.inky_display.BLACK)
+        self.epd = epd7in3f.EPD()
+        self.epd.init()
 
         # store display resolution in device config
         device_config.update_value("resolution", [int(self.inky_display.width), int(self.inky_display.height)])
@@ -42,8 +43,7 @@ class DisplayManager:
         image = resize_image(image, self.device_config.get_resolution(), plugin_config.get('image_settings', []))
 
         # Display the image on the Inky display
-        self.inky_display.set_image(image)
-        self.inky_display.show()
+        self.epd.display(self.epd.getbuffer(image))
 
     def display_image(self, image):
         """
@@ -61,5 +61,5 @@ class DisplayManager:
         image = resize_image(image, self.device_config.get_resolution())
 
         # Display the image on the Inky display
-        self.inky_display.set_image(image)
-        self.inky_display.show()
+        self.epd.display(self.epd.getbuffer(image))
+
