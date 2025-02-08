@@ -7,4 +7,4 @@ pillow==11.0.0
 pytz==2024.2
 openai==1.58.1
 numpy==2.2.1
-python3-gpiozero==2.0.1-0+rpt1
+python3-gpiozero
