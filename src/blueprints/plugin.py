@@ -35,10 +35,12 @@ def image(plugin_id, filename):
 
 @plugin_bp.route('/google_calendar/auth')
 def google_calendar_auth():
+    redirect_uri = 'https://f4c1-24-80-172-65.ngrok-free.app/plugin/google_calendar/oauth2callback'  
+    
     flow = Flow.from_client_secrets_file(
         '../plugins/calendar/credentials.json',
         scopes=SCOPES,
-        redirect_uri=url_for('plugin.google_calendar_auth', _external=True)
+        redirect_uri = redirect_uri
     )
     authorization_url, state = flow.authorization_url(
         access_type='offline',
