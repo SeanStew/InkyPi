@@ -237,7 +237,7 @@ class EPD:
         self.TurnOnDisplay()
         
     def Clear(self, color=0x11):
-        logger.info1("epd7in3f - clear")
+        logger.info("epd7in3f - clear")
         self.send_command(0x10)
         self.send_data2([color] * int(self.height) * int(self.width/2))
 
