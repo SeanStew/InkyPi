@@ -107,6 +107,7 @@ class EPD:
         if (epdconfig.module_init() != 0):
             return -1
         # EPD hardware init start
+        logger.debug("epd7in3f - init")
         self.reset()
         self.ReadBusyH()
         epdconfig.delay_ms(30)
@@ -198,6 +199,7 @@ class EPD:
         return 0
 
     def getbuffer(self, image):
+        logger.debug("epd7in3f - getbuffer")
         # Create a pallette with the 7 colors supported by the panel
         pal_image = Image.new("P", (1,1))
         pal_image.putpalette( (0,0,0,  255,255,255,  0,255,0,   0,0,255,  255,0,0,  255,255,0, 255,128,0) + (0,0,0)*249)
@@ -228,18 +230,21 @@ class EPD:
         return buf
 
     def display(self, image):
+        logger.debug("epd7in3f - display")
         self.send_command(0x10)
         self.send_data2(image)
 
         self.TurnOnDisplay()
         
     def Clear(self, color=0x11):
+        logger.debug("epd7in3f - clear")
         self.send_command(0x10)
         self.send_data2([color] * int(self.height) * int(self.width/2))
 
         self.TurnOnDisplay()
 
     def sleep(self):
+        logger.debug("epd7in3f - sleep")
         self.send_command(0x07) # DEEP_SLEEP
         self.send_data(0XA5)
         
