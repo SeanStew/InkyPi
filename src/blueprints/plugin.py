@@ -1,11 +1,12 @@
-from flask import Blueprint, request, jsonify, current_app, render_template, send_from_directory
+from flask import Blueprint, request, jsonify, current_app, render_template, send_from_directory, url_for, redirect
+from google_auth_oauthlib.flow import Flow
 from plugins.plugin_registry import get_plugin_instance
 from utils.app_utils import resolve_path
 import os
 import logging
 
 logger = logging.getLogger(__name__)
-plugin_bp = Blueprint("plugin", __name__)
+plugin_bp = Blueprint('plugin', __name__, url_prefix='/plugin')
 
 PLUGINS_DIR = resolve_path("plugins")
 
@@ -28,3 +29,25 @@ def plugin_page(plugin_id):
 @plugin_bp.route('/images/<plugin_id>/<path:filename>')
 def image(plugin_id, filename):
     return send_from_directory(PLUGINS_DIR, os.path.join(plugin_id, filename))
+
+@plugin_bp.route('/google_calendar/auth')
+def google_calendar_auth():
+    flow = Flow.from_client_secrets_file(
+        'plugins/google_calendar/credentials.json',
+        scopes=SCOPES,
+        redirect_uri=url_for('plugin.google_calendar_auth', _external=True)
+    )
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
+    return redirect(authorization_url)
+
+@plugin_bp.route('/google_calendar/oauth2callback')
+def google_calendar_oauth2callback():
+    # Get the authorization code from the request
+    code = request.args.get('code')
+
+    #... use the code to fetch tokens and save them to token.json (similar to get_credentials() in google_calendar.py)
+
+    return redirect(url_for('settings.index'))  # Redirect back to settings
