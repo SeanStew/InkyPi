@@ -51,7 +51,7 @@ class RaspberryPi:
     def __init__(self):
         import spidev
         import gpiozero
-        
+
         self.SPI = spidev.SpiDev()
         self.GPIO_RST_PIN    = gpiozero.LED(self.RST_PIN)
         self.GPIO_DC_PIN     = gpiozero.LED(self.DC_PIN)
