@@ -11,7 +11,7 @@ from plugins.base_plugin.base_plugin import BasePlugin
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-class GoogleCalendar(BasePlugin):
+class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
         super().__init__(config, **dependencies)
         self.creds = None
@@ -110,4 +110,4 @@ class GoogleCalendar(BasePlugin):
 
     def generate_settings_template(self):
         # You might want to create settings for customizing the calendar view
-        return {"settings_template": "google_calendar/settings.html"}
+        return {"settings_template": "calendar/settings.html"}
