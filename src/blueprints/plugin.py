@@ -10,6 +10,9 @@ plugin_bp = Blueprint('plugin', __name__, url_prefix='/plugin')
 
 PLUGINS_DIR = resolve_path("plugins")
 
+# If modifying these scopes, delete the file token.json.
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+
 @plugin_bp.route('/plugin/<plugin_id>')
 def plugin_page(plugin_id):
     device_config = current_app.config['DEVICE_CONFIG']
