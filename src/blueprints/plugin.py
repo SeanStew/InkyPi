@@ -36,7 +36,7 @@ def image(plugin_id, filename):
 @plugin_bp.route('/google_calendar/auth')
 def google_calendar_auth():
     flow = Flow.from_client_secrets_file(
-        'plugins/google_calendar/credentials.json',
+        '../plugins/calendar/credentials.json',
         scopes=SCOPES,
         redirect_uri=url_for('plugin.google_calendar_auth', _external=True)
     )
