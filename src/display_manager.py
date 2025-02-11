@@ -64,3 +64,4 @@ class DisplayManager:
         self.epd.display(self.epd.getbuffer(image))
         time.sleep(3)
 
+        self.epd.sleep()
