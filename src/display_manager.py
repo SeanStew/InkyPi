@@ -1,8 +1,8 @@
 import os
+import time
 from waveshare_epd import epd7in3f
 from utils.image_utils import resize_image, change_orientation
 from plugins.plugin_registry import get_plugin_instance
-
 
 class DisplayManager:
     def __init__(self, device_config):
@@ -15,6 +15,7 @@ class DisplayManager:
         self.device_config = device_config
         self.epd = epd7in3f.EPD()
         self.epd.init()
+        self.epd.clear()
 
         # store display resolution in device config
         device_config.update_value("resolution", [800, 480])
@@ -61,4 +62,5 @@ class DisplayManager:
 
         # Display the image on the Inky display
         self.epd.display(self.epd.getbuffer(image))
+        time.sleep(3)
 
