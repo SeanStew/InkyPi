@@ -17,7 +17,7 @@ class DisplayManager:
         self.epd.init()
 
         # store display resolution in device config
-        device_config.update_value("resolution", [int(self.inky_display.width), int(self.inky_display.height)])
+        device_config.update_value("resolution", [800, 480])
 
     def display_plugin(self, plugin_settings):
         """
