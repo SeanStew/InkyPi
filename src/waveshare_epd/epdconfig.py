@@ -49,6 +49,7 @@ class RaspberryPi:
     SCLK_PIN = 11
 
     def __init__(self):
+        logger.info("epdconfig - init")
         import spidev
         import gpiozero
 
@@ -115,8 +116,10 @@ class RaspberryPi:
 
     def module_init(self, cleanup=False):
         self.GPIO_PWR_PIN.on()
+        logger.info("epdconfig - module_init")
         
         if cleanup:
+            logger.info("epdconfig - cleanup")
             find_dirs = [
                 os.path.dirname(os.path.realpath(__file__)),
                 '/usr/local/lib',
@@ -137,7 +140,6 @@ class RaspberryPi:
                 RuntimeError('Cannot find DEV_Config.so')
 
             self.DEV_SPI.DEV_Module_Init()
-
         else:
             # SPI device, bus = 0, device = 0
             self.SPI.open(0, 0)
@@ -146,13 +148,13 @@ class RaspberryPi:
         return 0
 
     def module_exit(self, cleanup=False):
-        logger.debug("spi end")
+        logger.info("spi end")
         self.SPI.close()
 
         self.GPIO_RST_PIN.off()
         self.GPIO_DC_PIN.off()
         self.GPIO_PWR_PIN.off()
-        logger.debug("close 5V, Module enters 0 power consumption ...")
+        logger.info("close 5V, Module enters 0 power consumption ...")
         
         if cleanup:
             self.GPIO_RST_PIN.close()
@@ -223,10 +225,10 @@ class JetsonNano:
         return 0
 
     def module_exit(self):
-        logger.debug("spi end")
+        logger.info("spi end")
         self.SPI.SYSFS_software_spi_end()
 
-        logger.debug("close 5V, Module enters 0 power consumption ...")
+        logger.info("close 5V, Module enters 0 power consumption ...")
         self.GPIO.output(self.RST_PIN, 0)
         self.GPIO.output(self.DC_PIN, 0)
         self.GPIO.output(self.PWR_PIN, 0)
@@ -289,10 +291,10 @@ class SunriseX3:
             return 0
 
     def module_exit(self):
-        logger.debug("spi end")
+        logger.info("spi end")
         self.SPI.close()
 
-        logger.debug("close 5V, Module enters 0 power consumption ...")
+        logger.info("close 5V, Module enters 0 power consumption ...")
         self.Flag = 0
         self.GPIO.output(self.RST_PIN, 0)
         self.GPIO.output(self.DC_PIN, 0)
