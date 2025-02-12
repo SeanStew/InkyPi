@@ -13,7 +13,7 @@ START_TIME = 6
 END_TIME = 22
 
 GRID_COLOR = "#00ff00"
-EVENT_COLOR = "#OOOOFF"
+EVENT_COLOR = "#0000ff"
 LEGEND_COLOR = "#FF0000"
 
 class Calendar(BasePlugin):
