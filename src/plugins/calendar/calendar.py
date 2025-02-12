@@ -2,6 +2,7 @@ import os
 from ics import Calendar as icsCal
 import requests
 import datetime
+import pytz
 
 from utils.app_utils import get_font
 from PIL import Image, ImageDraw, ImageFont
@@ -19,8 +20,6 @@ class Calendar(BasePlugin):
 
         width,height = device_config.get_resolution()
 
-        today = datetime.datetime.now()
-
         if not ical_url:
             # Handle the case where the URL is not provided
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
@@ -32,6 +31,10 @@ class Calendar(BasePlugin):
         try:
             calendar = icsCal(requests.get(ical_url).text)
             events = calendar.events
+
+            # Get today's date in the Vancouver timezone
+            vancouver_timezone = pytz.timezone("America/Vancouver")
+            today = datetime.datetime.now(vancouver_timezone)
 
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
@@ -50,13 +53,13 @@ class Calendar(BasePlugin):
             for i in range(7):
                 day = today + datetime.timedelta(days=i)
                 day_str = day.strftime("%a %d")  # Format: "Mon 11"
-                x_pos = grid_start_x + i * cell_width + cell_width / 2 - 20 / 2
+                x_pos = grid_start_x + i * cell_width + cell_width / 2 - font.getsize(day_str) / 2
                 draw.text((x_pos, grid_start_y - 20), day_str, font=font, fill=0)
 
             # --- Time Labels ---
             for i in range(24):
                 hour_str = f"{i:02d}:00"  # Format: "00:00", "01:00", etc.
-                y_pos = grid_start_y + i * cell_height + cell_height / 2 - 20 / 2
+                y_pos = grid_start_y + i * cell_height + cell_height / 2 - font.getsize(hour_str) / 2
                 draw.text((grid_start_x - 35, y_pos), hour_str, font=font, fill=0)
 
             # Filter events for the current week
@@ -65,7 +68,8 @@ class Calendar(BasePlugin):
 
             events_this_week = [
                 event for event in events
-                if start_of_week.date() <= event.begin.datetime.date() <= end_of_week.date()
+                if start_of_week.date() <= event.begin.datetime.astimezone(vancouver_timezone).date() <= end_of_week.date()
+                and (event.begin.datetime.astimezone(vancouver_timezone).date() == event.end.datetime.astimezone(vancouver_timezone).date())
             ]
 
             # --- Draw Events ---
@@ -74,8 +78,8 @@ class Calendar(BasePlugin):
             else:
                 for event in events_this_week:
                     # Access event data using properties
-                    start_dt = event.begin.datetime  # Get start time as datetime object
-                    end_dt = event.end.datetime    # Get end time as datetime object
+                    start_dt = event.begin.datetime.astimezone(vancouver_timezone)  # Get start time as datetime object
+                    end_dt = event.end.datetime.astimezone(vancouver_timezone)    # Get end time as datetime object
 
                     # Calculate event position and duration
                     day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
