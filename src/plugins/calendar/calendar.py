@@ -33,11 +33,11 @@ class Calendar(BasePlugin):
         
         try:
             calendar = Calendar(requests.get(ical_url).text)
-            logger.info('calendar {}', calendar)
+            logger.info('calendar')
 
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
-            logger.info('image {}', img)
+            logger.info('image')
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
 
