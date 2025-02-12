@@ -39,9 +39,10 @@ class Calendar(BasePlugin):
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
             draw = ImageDraw.Draw(img)
-            font_size = max(10, min(width, height) // 20)
-            titleFont = get_font("jost-SemiBold", font_size)
-            textFont = get_font("jost", font_size)
+            title_font_size = max(10, min(width, height) // 20)
+            titleFont = get_font("jost-semibold", title_font_size)
+            text_font_size = max(10, min(width, height) // 24)
+            textFont = get_font("jost", text_font_size)
 
             # --- Grid Setup ---
             grid_start_x = 40  # Left margin for time labels
