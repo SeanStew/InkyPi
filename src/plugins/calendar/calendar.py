@@ -56,14 +56,15 @@ class Calendar(BasePlugin):
 
             # --- Draw Grid Lines ---
             # Vertical lines
-            for i in range(8):  # 8 lines to create 7 columns
+            for i in range(7):  # 7 lines skip the first and last
                 x_pos = grid_start_x + i * cell_width
-                draw.line([(x_pos, grid_start_y), (x_pos, grid_start_y + grid_height)], fill=0, width=1)
+                if (i > 0):
+                    draw.line([(x_pos, grid_start_y), (x_pos, grid_start_y + grid_height)], fill="lightblue", width=1)
 
             # Horizontal lines
             for i in range(END_TIME - START_TIME + 2):
                 y_pos = grid_start_y + i * cell_height
-                draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill=0, width=1)
+                draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill="lightblue", width=1)
 
             # --- Date Labels ---
             for i in range(7):
@@ -124,7 +125,7 @@ class Calendar(BasePlugin):
                         )
 
                         # Draw event summary (adjust position if needed)
-                        draw.text((x_pos + 5, y_pos + 5), event.name, font=textFont, fill=0) 
+                        draw.text((x_pos + 5, y_pos + 5), event.name, font=textFont, fill="#ffffff") 
 
             return img
         except requests.exceptions.RequestException as e:
