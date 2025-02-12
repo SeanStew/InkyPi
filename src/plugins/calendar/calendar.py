@@ -2,6 +2,7 @@ import os
 from ics import Calendar
 import requests
 from datetime import datetime, timedelta
+import pytz
 
 from PIL import Image, ImageDraw, ImageFont
 from plugins.base_plugin.base_plugin import BasePlugin
