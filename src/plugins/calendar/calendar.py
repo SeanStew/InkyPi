@@ -70,19 +70,18 @@ class Calendar(BasePlugin):
             # Filter events for the current week
             start_of_week = today - datetime.timedelta(days=today.weekday())
             end_of_week = start_of_week + datetime.timedelta(days=6)
-            events_this_week = [
-                event for event in events
-                if start_of_week.date() <= event.begin.date() <= end_of_week.date()
-            ]
 
             # --- Draw Events ---
-            if not events_this_week:
+            if not events:
                 draw.text((grid_start_x, grid_start_y), 'No upcoming events found.', font=font, fill=0)
             else:
-                for event in events_this_week:
+                for event in events:
                     # Access event data using properties
                     start_dt = event.begin.datetime  # Get start time as datetime object
                     end_dt = event.end.datetime    # Get end time as datetime object
+
+                    if start_of_week.date() <= start_dt <= end_of_week.date():
+                        continue
 
                     # Calculate event position and duration
                     day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
