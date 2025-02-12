@@ -7,14 +7,21 @@ from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
 from plugins.base_plugin.base_plugin import BasePlugin
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
         super().__init__(config, **dependencies)
 
     def generate_image(self, settings, device_config):
+        logger.info("generate_image")
         background_color = settings.get('backgroundColor', "white")
         ical_url = settings.get('inputText', '')  # Get the iCal URL from settings
         width,height = device_config.get_resolution()
+
+        logger.info("ical Url {}, width {}, height {}", ical_url, width, height)
 
         if not ical_url:
             # Handle the case where the URL is not provided
@@ -26,9 +33,11 @@ class Calendar(BasePlugin):
         
         try:
             calendar = Calendar(requests.get(ical_url).text)
+            logger.info('calendar {}', calendar)
 
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
+            logger.info('image {}', img)
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
 
