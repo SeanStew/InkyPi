@@ -12,9 +12,9 @@ DEFAULT_TIMEZONE = "US/Eastern"
 START_TIME = 6
 END_TIME = 22
 
-GRID_COLOR = "00ff00"
-EVENT_COLOR = "OOOOFF"
-LEGEND_COLOR = "FF0000"
+GRID_COLOR = "#00ff00"
+EVENT_COLOR = "#OOOOFF"
+LEGEND_COLOR = "#FF0000"
 
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
