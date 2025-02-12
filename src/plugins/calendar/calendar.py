@@ -7,10 +7,6 @@ from utils.app_utils import get_font
 from PIL import Image, ImageDraw, ImageFont
 from plugins.base_plugin.base_plugin import BasePlugin
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 DEFAULT_TIMEZONE = "US/Eastern"
 
 class Calendar(BasePlugin):
@@ -18,13 +14,10 @@ class Calendar(BasePlugin):
         super().__init__(config, **dependencies)
 
     def generate_image(self, settings, device_config):
-        logger.info("generate_image")
         background_color = settings.get('backgroundColor', "white")
         ical_url = settings.get('inputText', '')
 
         width,height = device_config.get_resolution()
-
-        logger.info(ical_url, width, height)
 
         today = datetime.datetime.now()
 
@@ -80,7 +73,7 @@ class Calendar(BasePlugin):
                     start_dt = event.begin.datetime  # Get start time as datetime object
                     end_dt = event.end.datetime    # Get end time as datetime object
 
-                    if start_of_week.date() <= start_dt <= end_of_week.date():
+                    if start_of_week.date() <= start_dt.date() <= end_of_week.date():
                         continue
 
                     # Calculate event position and duration
