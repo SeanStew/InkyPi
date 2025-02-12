@@ -15,7 +15,7 @@ class Calendar(BasePlugin):
         ical_url = settings.get('inputText', '')  # Get the iCal URL from settings
         if not ical_url:
             # Handle the case where the URL is not provided
-            img = Image.new('1', (device_config.get_resolution().get("width"), device_config.get_resolution().get("height")), 255)
+            img = Image.new('1', device_config.get_resolution(), 255)
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
             draw.text((10, 10), "Please provide an iCal URL in settings.", font=font, fill=0)
@@ -25,7 +25,7 @@ class Calendar(BasePlugin):
             calendar = Calendar(requests.get(ical_url).text)
 
             # Image generation (similar to before)
-            img = Image.new('1', (device_config.get_resolution().get("width"), device_config.get_resolution().get("height")), 255)
+            img = Image.new('1', device_config.get_resolution(), 255)
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
 
@@ -81,7 +81,7 @@ class Calendar(BasePlugin):
             return img
         except requests.exceptions.RequestException as e:
             # Handle errors while fetching the iCal file
-            img = Image.new('1', (device_config.get_resolution().get("width"), device_config.get_resolution().get("height")), 255)
+            img = Image.new('1', device_config.get_resolution(), 255)
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
             draw.text((10, 10), f"Error fetching iCal: {e}", font=font, fill=0)
