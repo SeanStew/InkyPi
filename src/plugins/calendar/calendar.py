@@ -1,5 +1,5 @@
 import os
-from ics import Calendar
+from ics import Calendar as icsCal
 import requests
 import datetime
 
@@ -37,7 +37,7 @@ class Calendar(BasePlugin):
             return img
         
         try:
-            calendar = Calendar(requests.get(ical_url).text)
+            calendar = icsCal(requests.get(ical_url).text)
             events = calendar.events
 
             # Image generation (similar to before)
@@ -84,14 +84,14 @@ class Calendar(BasePlugin):
                     start_dt = datetime.fromisoformat(start.replace('Z', '+00:00'))  # Handle UTC time
                     end = event['end'].get('dateTime', event['end'].get('date'))
                     end_dt = datetime.fromisoformat(end.replace('Z', '+00:00'))
-        
+
                     # Calculate event position and duration
                     day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
                     x_pos = grid_start_x + day_offset * cell_width
                     y_pos = grid_start_y + start_dt.hour * cell_height
                     event_duration_hours = (end_dt - start_dt).total_seconds() / 3600
                     event_height = event_duration_hours * cell_height
-        
+
                     # Draw the event rectangle
                     draw.rectangle(
                         [
@@ -101,7 +101,7 @@ class Calendar(BasePlugin):
                         outline=0,
                         fill="lightblue"  # You can customize the color
                     )
-        
+
                     # Draw event summary (adjust position if needed)
                     draw.text((x_pos + 5, y_pos + 5), event['summary'], font=font, fill=0) 
 
