@@ -80,10 +80,9 @@ class Calendar(BasePlugin):
                 draw.text((grid_start_x, grid_start_y), 'No upcoming events found.', font=font, fill=0)
             else:
                 for event in events_this_week:
-                    start = event['start'].get('dateTime', event['start'].get('date'))
-                    start_dt = datetime.fromisoformat(start.replace('Z', '+00:00'))  # Handle UTC time
-                    end = event['end'].get('dateTime', event['end'].get('date'))
-                    end_dt = datetime.fromisoformat(end.replace('Z', '+00:00'))
+                    # Access event data using properties
+                    start_dt = event.begin.datetime  # Get start time as datetime object
+                    end_dt = event.end.datetime    # Get end time as datetime object
 
                     # Calculate event position and duration
                     day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
