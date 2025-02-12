@@ -13,7 +13,7 @@ class Calendar(BasePlugin):
 
     def generate_image(self, settings, device_config):
         ical_url = settings.get('inputText', '')  # Get the iCal URL from settings
-        if not ical_url or ical_url.length == 0:
+        if not ical_url:
             # Handle the case where the URL is not provided
             img = Image.new('1', (device_config.get("resolution").get("width"), device_config.get("resolution").get("height")), 255)
             draw = ImageDraw.Draw(img)
