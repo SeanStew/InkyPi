@@ -2,7 +2,6 @@ import os
 from ics import Calendar
 import requests
 import datetime
-import pytz
 
 from PIL import Image, ImageDraw, ImageFont
 from plugins.base_plugin.base_plugin import BasePlugin
@@ -27,8 +26,7 @@ class Calendar(BasePlugin):
 
         logger.info(ical_url, width, height)
 
-        tz = pytz.timezone(timezone_name)
-        today = datetime.now(tz)
+        today = datetime.datetime.now()
 
         if not ical_url:
             # Handle the case where the URL is not provided
