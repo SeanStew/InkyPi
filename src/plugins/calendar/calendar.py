@@ -21,7 +21,6 @@ class Calendar(BasePlugin):
         logger.info("generate_image")
         background_color = settings.get('backgroundColor', "white")
         ical_url = settings.get('inputText', '')
-        timezone_name = device_config.get_config("timezone") or DEFAULT_TIMEZONE
 
         width,height = device_config.get_resolution()
 
@@ -39,6 +38,7 @@ class Calendar(BasePlugin):
         
         try:
             calendar = Calendar(requests.get(ical_url).text)
+            events = calendar.events
 
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
@@ -70,28 +70,40 @@ class Calendar(BasePlugin):
             # Filter events for the current week
             start_of_week = today - datetime.timedelta(days=today.weekday())
             end_of_week = start_of_week + datetime.timedelta(days=6)
-            events = [
-                event for event in calendar
-                if start_of_week.date() <= event.get('dtstart').dt.date() <= end_of_week.date()
+            events_this_week = [
+                event for event in events
+                if start_of_week.date() <= event.begin.date() <= end_of_week.date()
             ]
 
             # --- Draw Events ---
-            if not events:
+            if not events_this_week:
                 draw.text((grid_start_x, grid_start_y), 'No upcoming events found.', font=font, fill=0)
             else:
-                for event in events:
+                for event in events_this_week:
                     start = event['start'].get('dateTime', event['start'].get('date'))
                     start_dt = datetime.fromisoformat(start.replace('Z', '+00:00'))  # Handle UTC time
-
-                    # Calculate event position in the grid
+                    end = event['end'].get('dateTime', event['end'].get('date'))
+                    end_dt = datetime.fromisoformat(end.replace('Z', '+00:00'))
+        
+                    # Calculate event position and duration
                     day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
                     x_pos = grid_start_x + day_offset * cell_width
                     y_pos = grid_start_y + start_dt.hour * cell_height
-
-                    #... (Add logic to calculate event duration and draw rectangles)
-                    #... (You'll need to parse the end time and handle multi-day events)
-
-                    draw.text((x_pos + 5, y_pos + 5), event['summary'], font=font, fill=0)
+                    event_duration_hours = (end_dt - start_dt).total_seconds() / 3600
+                    event_height = event_duration_hours * cell_height
+        
+                    # Draw the event rectangle
+                    draw.rectangle(
+                        [
+                            (x_pos, y_pos),
+                            (x_pos + cell_width, y_pos + event_height)
+                        ],
+                        outline=0,
+                        fill="lightblue"  # You can customize the color
+                    )
+        
+                    # Draw event summary (adjust position if needed)
+                    draw.text((x_pos + 5, y_pos + 5), event['summary'], font=font, fill=0) 
 
             return img
         except requests.exceptions.RequestException as e:
