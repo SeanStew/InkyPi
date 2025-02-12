@@ -96,7 +96,7 @@ class Calendar(BasePlugin):
                     )
 
                     # Draw event summary (adjust position if needed)
-                    draw.text((x_pos + 5, y_pos + 5), event.get('summary'), font=font, fill=0) 
+                    draw.text((x_pos + 5, y_pos + 5), event.name, font=font, fill=0) 
 
             return img
         except requests.exceptions.RequestException as e:
