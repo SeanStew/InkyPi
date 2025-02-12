@@ -54,6 +54,17 @@ class Calendar(BasePlugin):
             cell_width = grid_width / 7  # 7 days a week
             cell_height = grid_height / (END_TIME - START_TIME + 1)  # Diff of start & end time
 
+            # --- Draw Grid Lines ---
+            # Vertical lines
+            for i in range(8):  # 8 lines to create 7 columns
+                x_pos = grid_start_x + i * cell_width
+                draw.line([(x_pos, grid_start_y), (x_pos, grid_start_y + grid_height)], fill=0, width=1)
+
+            # Horizontal lines
+            for i in range(END_TIME - START_TIME + 2):
+                y_pos = grid_start_y + i * cell_height
+                draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill=0, width=1)
+
             # --- Date Labels ---
             for i in range(7):
                 day = today + datetime.timedelta(days=i)
@@ -64,7 +75,14 @@ class Calendar(BasePlugin):
             # --- Time Labels ---
             for i in range((END_TIME - START_TIME + 1)): # hours to display
                 hour = START_TIME + i 
-                hour_str = f"{hour:02d}:00"  # Format: "06:00", "07:00", etc.
+                
+                if hour < 12:
+                    hour_str = f"{hour}am"
+                elif hour == 12:
+                     hour_str = "12pm"
+                else:
+                    hour_str = f"{hour - 12}pm"
+
                 y_pos = grid_start_y + i * cell_height + cell_height / 2 - titleFont.getlength(hour_str) / 2
                 draw.text((grid_start_x - 35, y_pos), hour_str, font=titleFont, fill=0)
 
@@ -102,7 +120,7 @@ class Calendar(BasePlugin):
                                 (x_pos + cell_width, y_pos + event_height)
                             ],
                             outline=0,
-                            fill="lightblue"  # You can customize the color
+                            fill="#0000ff"
                         )
 
                         # Draw event summary (adjust position if needed)
