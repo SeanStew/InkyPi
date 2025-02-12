@@ -12,6 +12,10 @@ DEFAULT_TIMEZONE = "US/Eastern"
 START_TIME = 6
 END_TIME = 22
 
+GRID_COLOR = "00ff00"
+EVENT_COLOR = "OOOOFF"
+LEGEND_COLOR = "FF0000"
+
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
         super().__init__(config, **dependencies)
@@ -59,19 +63,19 @@ class Calendar(BasePlugin):
             for i in range(7):  # 7 lines skip the first and last
                 x_pos = grid_start_x + i * cell_width
                 if (i > 0):
-                    draw.line([(x_pos, grid_start_y), (x_pos, grid_start_y + grid_height)], fill="lightblue", width=1)
+                    draw.line([(x_pos, grid_start_y), (x_pos, grid_start_y + grid_height)], fill=GRID_COLOR, width=1)
 
             # Horizontal lines
             for i in range(END_TIME - START_TIME + 2):
                 y_pos = grid_start_y + i * cell_height
-                draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill="lightblue", width=1)
+                draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill=GRID_COLOR, width=1)
 
             # --- Date Labels ---
             for i in range(7):
                 day = today + datetime.timedelta(days=i)
                 day_str = day.strftime("%a %d")  # Format: "Mon 11"
                 x_pos = grid_start_x + i * cell_width + cell_width / 2 - titleFont.getlength(day_str) / 2
-                draw.text((x_pos, grid_start_y - 20), day_str, font=titleFont, fill=0)
+                draw.text((x_pos, grid_start_y - 20), day_str, font=titleFont, fill=LEGEND_COLOR)
 
             # --- Time Labels ---
             for i in range((END_TIME - START_TIME + 1)): # hours to display
@@ -85,7 +89,7 @@ class Calendar(BasePlugin):
                     hour_str = f"{hour - 12}pm"
 
                 y_pos = grid_start_y + i * cell_height + cell_height / 2 - titleFont.getlength(hour_str) / 2
-                draw.text((grid_start_x - 35, y_pos), hour_str, font=titleFont, fill=0)
+                draw.text((grid_start_x - 35, y_pos), hour_str, font=titleFont, fill=LEGEND_COLOR)
 
             # Filter events for the current week
             start_of_week = today - datetime.timedelta(days=today.weekday())
@@ -121,7 +125,7 @@ class Calendar(BasePlugin):
                                 (x_pos + cell_width, y_pos + event_height)
                             ],
                             outline=0,
-                            fill="#0000ff"
+                            fill=EVENT_COLOR
                         )
 
                         # Draw event summary (adjust position if needed)
