@@ -1,7 +1,6 @@
-<h2>Google Calendar Settings</h2>
-
-{% if not google_calendar_authenticated %}
-    <a href="{{ url_for('plugin.google_calendar_auth') }}">Authenticate with Google Calendar</a>
-{% endif %}
-
-<p>You can potentially add settings here in the future (e.g., number of events to display).</p>
+<h2>iCal Calendar Settings</h2>
+<form method="POST" action="{{ url_for('settings.save_plugin_settings', plugin_id='ical_calendar') }}">
+    <label for="ical_url">iCal URL:</label>
+    <input type="text" name="ical_url" id="ical_url" value="{{ plugin_settings.get('ical_url', '') }}"><br><br>
+    <button type="submit">Save</button>
+</form>
