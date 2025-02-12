@@ -71,7 +71,7 @@ class Calendar(BasePlugin):
             start_of_week = today - datetime.timedelta(days=today.weekday())
             end_of_week = start_of_week + datetime.timedelta(days=6)
             events = [
-                event for event in calendar.walk('vevent')
+                event for event in calendar
                 if start_of_week.date() <= event.get('dtstart').dt.date() <= end_of_week.date()
             ]
 
