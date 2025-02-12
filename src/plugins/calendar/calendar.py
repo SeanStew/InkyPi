@@ -9,6 +9,8 @@ from PIL import Image, ImageDraw, ImageFont
 from plugins.base_plugin.base_plugin import BasePlugin
 
 DEFAULT_TIMEZONE = "US/Eastern"
+START_TIME = 6
+END_TIME = 22
 
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
@@ -39,9 +41,9 @@ class Calendar(BasePlugin):
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
             draw = ImageDraw.Draw(img)
-            title_font_size = max(10, min(width, height) // 20)
+            title_font_size = 18
             titleFont = get_font("jost-semibold", title_font_size)
-            text_font_size = max(10, min(width, height) // 24)
+            text_font_size = 12
             textFont = get_font("jost", text_font_size)
 
             # --- Grid Setup ---
@@ -50,7 +52,7 @@ class Calendar(BasePlugin):
             grid_width = width - grid_start_x - 10  # Adjust for right margin
             grid_height = height - grid_start_y - 10  # Adjust for bottom margin
             cell_width = grid_width / 7  # 7 days a week
-            cell_height = grid_height / 24  # 24 hours a day
+            cell_height = grid_height / (END_TIME - START_TIME + 1)  # Diff of start & end time
 
             # --- Date Labels ---
             for i in range(7):
@@ -60,10 +62,11 @@ class Calendar(BasePlugin):
                 draw.text((x_pos, grid_start_y - 20), day_str, font=titleFont, fill=0)
 
             # --- Time Labels ---
-            for i in range(24):
-                hour_str = f"{i:02d}:00"  # Format: "00:00", "01:00", etc.
-                y_pos = grid_start_y + i * cell_height + cell_height / 2 - titleFont.getlength(hour_str) / 2
-                draw.text((grid_start_x - 35, y_pos), hour_str, font=titleFont, fill=0)
+            for i in range((END_TIME - START_TIME + 1)): # hours to display
+                hour = START_TIME + i 
+                hour_str = f"{hour:02d}:00"  # Format: "06:00", "07:00", etc.
+                y_pos = grid_start_y + i * cell_height + cell_height / 2 - font.getsize(hour_str) / 2
+                draw.text((grid_start_x - 35, y_pos), hour_str, font=font, fill=0)
 
             # Filter events for the current week
             start_of_week = today - datetime.timedelta(days=today.weekday())
@@ -87,22 +90,23 @@ class Calendar(BasePlugin):
                     # Calculate event position and duration
                     day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
                     x_pos = grid_start_x + day_offset * cell_width
-                    y_pos = grid_start_y + start_dt.hour * cell_height
+                    y_pos = grid_start_y + (start_dt.hour - START_TIME) * cell_height  # Adjust for starting at 6 AM
                     event_duration_hours = (end_dt - start_dt).total_seconds() / 3600
                     event_height = event_duration_hours * cell_height
 
                     # Draw the event rectangle
-                    draw.rectangle(
-                        [
-                            (x_pos, y_pos),
-                            (x_pos + cell_width, y_pos + event_height)
-                        ],
-                        outline=0,
-                        fill="lightblue"  # You can customize the color
-                    )
+                    if START_TIME <= start_dt.hour <= END_TIME or START_TIME <= end_dt.hour <= END_TIME:
+                        draw.rectangle(
+                            [
+                                (x_pos, y_pos),
+                                (x_pos + cell_width, y_pos + event_height)
+                            ],
+                            outline=0,
+                            fill="lightblue"  # You can customize the color
+                        )
 
-                    # Draw event summary (adjust position if needed)
-                    draw.text((x_pos + 5, y_pos + 5), event.name, font=textFont, fill=0) 
+                        # Draw event summary (adjust position if needed)
+                        draw.text((x_pos + 5, y_pos + 5), event.name, font=textFont, fill=0) 
 
             return img
         except requests.exceptions.RequestException as e:
