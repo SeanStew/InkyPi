@@ -15,7 +15,6 @@ class DisplayManager:
         self.device_config = device_config
         self.epd = epd7in3f.EPD()
         self.epd.init()
-        self.epd.Clear()
 
         # store display resolution in device config
         device_config.update_value("resolution", [800, 480])
