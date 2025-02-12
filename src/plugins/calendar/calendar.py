@@ -3,6 +3,7 @@ from ics import Calendar
 import requests
 import datetime
 
+from utils.app_utils import get_font
 from PIL import Image, ImageDraw, ImageFont
 from plugins.base_plugin.base_plugin import BasePlugin
 
@@ -38,13 +39,12 @@ class Calendar(BasePlugin):
         
         try:
             calendar = Calendar(requests.get(ical_url).text)
-            logger.info('calendar')
 
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
-            logger.info('image')
             draw = ImageDraw.Draw(img)
-            font = ImageFont.load_default()
+            font_size = 56
+            font = get_font("ds-gigi", font_size)
 
             # --- Grid Setup ---
             grid_start_x = 40  # Left margin for time labels
@@ -57,19 +57,19 @@ class Calendar(BasePlugin):
             # --- Date Labels ---
             for i in range(7):
                 day = today + datetime.timedelta(days=i)
-                day_str = day.strftime("%a %m/%d")  # Format: "Mon 02/11"
-                x_pos = grid_start_x + i * cell_width + cell_width / 2 - font.getsize(day_str) / 2
+                day_str = day.strftime("%a %d")  # Format: "Mon 11"
+                x_pos = grid_start_x + i * cell_width + cell_width / 2 - font_size / 2
                 draw.text((x_pos, grid_start_y - 20), day_str, font=font, fill=0)
 
             # --- Time Labels ---
             for i in range(24):
                 hour_str = f"{i:02d}:00"  # Format: "00:00", "01:00", etc.
-                y_pos = grid_start_y + i * cell_height + cell_height / 2 - font.getsize(hour_str) / 2
+                y_pos = grid_start_y + i * cell_height + cell_height / 2 - font_size / 2
                 draw.text((grid_start_x - 35, y_pos), hour_str, font=font, fill=0)
 
             # Filter events for the current week
-            start_of_week = today - timedelta(days=today.weekday())
-            end_of_week = start_of_week + timedelta(days=6)
+            start_of_week = today - datetime.timedelta(days=today.weekday())
+            end_of_week = start_of_week + datetime.timedelta(days=6)
             events = [
                 event for event in calendar.walk('vevent')
                 if start_of_week.date() <= event.get('dtstart').dt.date() <= end_of_week.date()
