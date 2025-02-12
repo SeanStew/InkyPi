@@ -1,6 +1,6 @@
 import os
 import datetime
-from icalendar import Calendar
+from ics import Calendar
 import requests
 from datetime import datetime, timedelta
 
@@ -13,7 +13,7 @@ class Calendar(BasePlugin):
 
     def generate_image(self, settings, device_config):
         ical_url = settings.get('inputText', '')  # Get the iCal URL from settings
-        if not ical_url:
+        if not ical_url or ical_url.length == 0:
             # Handle the case where the URL is not provided
             img = Image.new('1', (device_config.get("resolution").get("width"), device_config.get("resolution").get("height")), 255)
             draw = ImageDraw.Draw(img)
@@ -22,9 +22,7 @@ class Calendar(BasePlugin):
             return img
         
         try:
-            response = requests.get(ical_url)
-            response.raise_for_status()  # Raise an exception for bad status codes
-            calendar = Calendar.from_ical(response.text)
+            calendar = Calendar(requests.get(ical_url).text)
 
             # Image generation (similar to before)
             img = Image.new('1', (device_config.get("resolution").get("width"), device_config.get("resolution").get("height")), 255)
