@@ -65,8 +65,8 @@ class Calendar(BasePlugin):
             for i in range((END_TIME - START_TIME + 1)): # hours to display
                 hour = START_TIME + i 
                 hour_str = f"{hour:02d}:00"  # Format: "06:00", "07:00", etc.
-                y_pos = grid_start_y + i * cell_height + cell_height / 2 - font.getsize(hour_str) / 2
-                draw.text((grid_start_x - 35, y_pos), hour_str, font=font, fill=0)
+                y_pos = grid_start_y + i * cell_height + cell_height / 2 - textFont.getsize(hour_str) / 2
+                draw.text((grid_start_x - 35, y_pos), hour_str, font=textFont, fill=0)
 
             # Filter events for the current week
             start_of_week = today - datetime.timedelta(days=today.weekday())
