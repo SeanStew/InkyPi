@@ -9,6 +9,4 @@ pytz==2024.2
 openai==1.58.1
 numpy==2.2.1
 rpi.gpio
-google-api-python-client 
-google-auth-httplib2 
-google-auth-oauthlib
+pip install icalendar
