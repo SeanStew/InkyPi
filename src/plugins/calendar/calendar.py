@@ -1,5 +1,4 @@
 import os
-import datetime
 from ics import Calendar
 import requests
 from datetime import datetime, timedelta
@@ -11,6 +10,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_TIMEZONE = "US/Eastern"
+
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
         super().__init__(config, **dependencies)
@@ -18,10 +19,15 @@ class Calendar(BasePlugin):
     def generate_image(self, settings, device_config):
         logger.info("generate_image")
         background_color = settings.get('backgroundColor', "white")
-        ical_url = settings.get('inputText', '')  # Get the iCal URL from settings
+        ical_url = settings.get('inputText', '')
+        timezone_name = device_config.get_config("timezone") or DEFAULT_TIMEZONE
+
         width,height = device_config.get_resolution()
 
-        logger.info("ical Url {}, width {}, height {}", ical_url, width, height)
+        logger.info(ical_url, width, height)
+
+        tz = pytz.timezone(timezone_name)
+        today = datetime.now(tz)
 
         if not ical_url:
             # Handle the case where the URL is not provided
@@ -50,7 +56,6 @@ class Calendar(BasePlugin):
             cell_height = grid_height / 24  # 24 hours a day
 
             # --- Date Labels ---
-            today = datetime.datetime.now()
             for i in range(7):
                 day = today + datetime.timedelta(days=i)
                 day_str = day.strftime("%a %m/%d")  # Format: "Mon 02/11"
@@ -64,7 +69,6 @@ class Calendar(BasePlugin):
                 draw.text((grid_start_x - 35, y_pos), hour_str, font=font, fill=0)
 
             # Filter events for the current week
-            today = datetime.now()
             start_of_week = today - timedelta(days=today.weekday())
             end_of_week = start_of_week + timedelta(days=6)
             events = [
@@ -78,7 +82,7 @@ class Calendar(BasePlugin):
             else:
                 for event in events:
                     start = event['start'].get('dateTime', event['start'].get('date'))
-                    start_dt = datetime.datetime.fromisoformat(start.replace('Z', '+00:00'))  # Handle UTC time
+                    start_dt = datetime.fromisoformat(start.replace('Z', '+00:00'))  # Handle UTC time
 
                     # Calculate event position in the grid
                     day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
