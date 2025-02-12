@@ -56,13 +56,13 @@ class Calendar(BasePlugin):
             for i in range(7):
                 day = today + datetime.timedelta(days=i)
                 day_str = day.strftime("%a %d")  # Format: "Mon 11"
-                x_pos = grid_start_x + i * cell_width + cell_width / 2 - titleFont.getbbox(day_str) / 2
+                x_pos = grid_start_x + i * cell_width + cell_width / 2 - titleFont.getlength(day_str) / 2
                 draw.text((x_pos, grid_start_y - 20), day_str, font=titleFont, fill=0)
 
             # --- Time Labels ---
             for i in range(24):
                 hour_str = f"{i:02d}:00"  # Format: "00:00", "01:00", etc.
-                y_pos = grid_start_y + i * cell_height + cell_height / 2 - titleFont.getbbox(hour_str) / 2
+                y_pos = grid_start_y + i * cell_height + cell_height / 2 - titleFont.getlength(hour_str) / 2
                 draw.text((grid_start_x - 35, y_pos), hour_str, font=titleFont, fill=0)
 
             # Filter events for the current week
