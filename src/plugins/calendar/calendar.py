@@ -12,10 +12,13 @@ class Calendar(BasePlugin):
         super().__init__(config, **dependencies)
 
     def generate_image(self, settings, device_config):
+        background_color = settings.get('backgroundColor', "white")
         ical_url = settings.get('inputText', '')  # Get the iCal URL from settings
+        width,height = device_config.get_resolution()
+
         if not ical_url:
             # Handle the case where the URL is not provided
-            img = Image.new('1', device_config.get_resolution(), 255)
+            img = Image.new('RGBA', device_config.get_resolution(), background_color)
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
             draw.text((10, 10), "Please provide an iCal URL in settings.", font=font, fill=0)
@@ -25,15 +28,15 @@ class Calendar(BasePlugin):
             calendar = Calendar(requests.get(ical_url).text)
 
             # Image generation (similar to before)
-            img = Image.new('1', device_config.get_resolution(), 255)
+            img = Image.new('RGBA', device_config.get_resolution(), background_color)
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
 
             # --- Grid Setup ---
             grid_start_x = 40  # Left margin for time labels
             grid_start_y = 40  # Top margin for date labels
-            grid_width = device_config.get_resolution().get("width") - grid_start_x - 10  # Adjust for right margin
-            grid_height = device_config.get_resolution().get("height") - grid_start_y - 10  # Adjust for bottom margin
+            grid_width = width - grid_start_x - 10  # Adjust for right margin
+            grid_height = height - grid_start_y - 10  # Adjust for bottom margin
             cell_width = grid_width / 7  # 7 days a week
             cell_height = grid_height / 24  # 24 hours a day
 
@@ -81,7 +84,7 @@ class Calendar(BasePlugin):
             return img
         except requests.exceptions.RequestException as e:
             # Handle errors while fetching the iCal file
-            img = Image.new('1', device_config.get_resolution(), 255)
+            img = Image.new('RGBA', device_config.get_resolution(), background_color)
             draw = ImageDraw.Draw(img)
             font = ImageFont.load_default()
             draw.text((10, 10), f"Error fetching iCal: {e}", font=font, fill=0)
