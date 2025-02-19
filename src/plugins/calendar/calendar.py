@@ -25,11 +25,11 @@ class Calendar(BasePlugin):
 
     def wrap_text(self, text, font, max_width):
         words = text.split()
-        lines =""
+        lines = list()
         current_line = ""
         for word in words:
             if font.getlength(current_line + word) <= max_width:
-                current_line += word + " "
+                current_line = current_line + word + " "
             else:
                 lines.append(current_line)
                 current_line = word + " "
