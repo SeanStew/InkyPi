@@ -44,8 +44,6 @@ class DisplayManager:
         # Display the image on the Inky display
         self.display_image(image)
 
-        self.epd.sleep()
-
     def display_image(self, image):
         """
         Displays the image provided.
