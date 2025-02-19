@@ -9,15 +9,15 @@ from PIL import Image, ImageDraw, ImageFont
 from plugins.base_plugin.base_plugin import BasePlugin
 
 DEFAULT_TIMEZONE = "US/Eastern"
-START_TIME = 6
+START_TIME = 8
 END_TIME = 22
 
 DAYS_TO_SHOW = 5
 
-GRID_COLOR = "#00ff00"
-EVENT_COLOR = "#0000ff"
+GRID_COLOR = "#000000"
+EVENT_COLOR = "#00ff00"
 EVENT_TEXT_COLOR = "#ffffff"
-LEGEND_COLOR = "#FF0000"
+LEGEND_COLOR = "#000000"
 
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
@@ -63,7 +63,7 @@ class Calendar(BasePlugin):
             draw = ImageDraw.Draw(img)
             title_font_size = 18
             titleFont = get_font("jost-semibold", title_font_size)
-            text_font_size = 12
+            text_font_size = 14
             textFont = get_font("jost", text_font_size)
 
             # --- Grid Setup ---
@@ -104,7 +104,7 @@ class Calendar(BasePlugin):
                 else:
                     hour_str = f"{hour - 12}pm"
 
-                y_pos = grid_start_y + i * cell_height + cell_height / 2 - titleFont.getlength(hour_str) / 2
+                y_pos = grid_start_y + i * cell_height  # Align with horizontal line
                 draw.text((grid_start_x - 35, y_pos), hour_str, font=titleFont, fill=LEGEND_COLOR)
 
             # Filter events for the next days
