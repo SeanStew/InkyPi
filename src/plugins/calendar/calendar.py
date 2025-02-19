@@ -3,6 +3,7 @@ from ics import Calendar as icsCal
 import requests
 import datetime
 import pytz
+import logging
 
 from utils.app_utils import get_font
 from PIL import Image, ImageDraw, ImageFont
@@ -19,18 +20,26 @@ EVENT_COLOR = "#00ff00"
 EVENT_TEXT_COLOR = "#ffffff"
 LEGEND_COLOR = "#000000"
 
+logger = logging.getLogger(__name__)
+
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
         super().__init__(config, **dependencies)
 
     def wrap_text(self, text, font, max_width):
+        logger.info("Calendar - wrap_text")
         words = text.split()
         lines = list()
         current_line = ""
+
+        
         for word in words:
+            logger.info("Calendar - word " + word)
             if font.getlength(current_line + word) <= max_width:
+                logger.info("Calendar - same line")
                 current_line = current_line + word + " "
             else:
+                logger.info("Calendar - new line")
                 lines.append(current_line)
                 current_line = word + " "  # Reset current_line correctly
         lines.append(current_line)  # Append the last line
