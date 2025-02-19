@@ -12,13 +12,29 @@ DEFAULT_TIMEZONE = "US/Eastern"
 START_TIME = 6
 END_TIME = 22
 
+DAYS_TO_SHOW = 5
+
 GRID_COLOR = "#00ff00"
 EVENT_COLOR = "#0000ff"
+EVENT_TEXT_COLOR = "#ffffff"
 LEGEND_COLOR = "#FF0000"
 
 class Calendar(BasePlugin):
     def __init__(self, config, **dependencies):
         super().__init__(config, **dependencies)
+
+    def wrap_text(self, text, font, max_width):
+        words = text.split()
+        lines =""
+        current_line = ""
+        for word in words:
+            if font.getlength(current_line + word) <= max_width:
+                current_line += word + " "
+            else:
+                lines.append(current_line)
+                current_line = word + " "
+        lines.append(current_line)
+        return '\n'.join(lines)
 
     def generate_image(self, settings, device_config):
         background_color = settings.get('backgroundColor', "white")
@@ -55,12 +71,12 @@ class Calendar(BasePlugin):
             grid_start_y = 40  # Top margin for date labels
             grid_width = width - grid_start_x - 10  # Adjust for right margin
             grid_height = height - grid_start_y - 10  # Adjust for bottom margin
-            cell_width = grid_width / 7  # 7 days a week
+            cell_width = grid_width / DAYS_TO_SHOW  # days a week
             cell_height = grid_height / (END_TIME - START_TIME + 1)  # Diff of start & end time
 
             # --- Draw Grid Lines ---
             # Vertical lines
-            for i in range(7):  # 7 lines skip the first and last
+            for i in range(DAYS_TO_SHOW + 1):
                 x_pos = grid_start_x + i * cell_width
                 if (i > 0):
                     draw.line([(x_pos, grid_start_y), (x_pos, grid_start_y + grid_height)], fill=GRID_COLOR, width=1)
@@ -71,7 +87,7 @@ class Calendar(BasePlugin):
                 draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill=GRID_COLOR, width=1)
 
             # --- Date Labels ---
-            for i in range(7):
+            for i in range(DAYS_TO_SHOW):
                 day = today + datetime.timedelta(days=i)
                 day_str = day.strftime("%a %d")  # Format: "Mon 11"
                 x_pos = grid_start_x + i * cell_width + cell_width / 2 - titleFont.getlength(day_str) / 2
@@ -91,13 +107,12 @@ class Calendar(BasePlugin):
                 y_pos = grid_start_y + i * cell_height + cell_height / 2 - titleFont.getlength(hour_str) / 2
                 draw.text((grid_start_x - 35, y_pos), hour_str, font=titleFont, fill=LEGEND_COLOR)
 
-            # Filter events for the current week
-            start_of_week = today - datetime.timedelta(days=today.weekday())
-            end_of_week = start_of_week + datetime.timedelta(days=6)
+            # Filter events for the next days
+            end_of_week = today + datetime.timedelta(days=DAYS_TO_SHOW - 1)
 
             events_this_week = [
                 event for event in events
-                if start_of_week.date() <= event.begin.datetime.astimezone(vancouver_timezone).date() <= end_of_week.date()
+                if today.date() <= event.begin.datetime.astimezone(vancouver_timezone).date() <= end_of_week.date()
                 and (event.begin.datetime.astimezone(vancouver_timezone).date() == event.end.datetime.astimezone(vancouver_timezone).date())
             ]
 
@@ -111,7 +126,7 @@ class Calendar(BasePlugin):
                     end_dt = event.end.datetime.astimezone(vancouver_timezone)    # Get end time as datetime object
 
                     # Calculate event position and duration
-                    day_offset = (start_dt.weekday() - today.weekday()) % 7  # Adjust for week wrapping
+                    day_offset = (start_dt.weekday() - today.weekday()) % DAYS_TO_SHOW  # Adjust for week wrapping
                     x_pos = grid_start_x + day_offset * cell_width
                     y_pos = grid_start_y + (start_dt.hour - START_TIME) * cell_height  # Adjust for starting at 6 AM
                     event_duration_hours = (end_dt - start_dt).total_seconds() / 3600
@@ -128,8 +143,9 @@ class Calendar(BasePlugin):
                             fill=EVENT_COLOR
                         )
 
-                        # Draw event summary (adjust position if needed)
-                        draw.text((x_pos + 5, y_pos + 5), event.name, font=textFont, fill="#ffffff") 
+                        # Draw event summary with wrapping
+                        wrapped_text = self.wrap_text(event.name, textFont, cell_width - 10)
+                        draw.multiline_text((x_pos + 5, y_pos + 5), wrapped_text, font=textFont, fill=EVENT_TEXT_COLOR)
 
             return img
         except requests.exceptions.RequestException as e:
