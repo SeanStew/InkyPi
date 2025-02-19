@@ -32,8 +32,8 @@ class Calendar(BasePlugin):
                 current_line = current_line + word + " "
             else:
                 lines.append(current_line)
-                current_line = word + " "
-        lines.append(current_line)
+                current_line = word + " "  # Reset current_line correctly
+        lines.append(current_line)  # Append the last line
         return '\n'.join(lines)
 
     def generate_image(self, settings, device_config):
