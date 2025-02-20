@@ -216,24 +216,30 @@ class EPD:
 
 
         # Convert the soruce image to the 7 colors, dithering if needed
+        logger.info("epd7in3f - convert")
         image_7color = image_temp.convert("RGB").quantize(palette=pal_image)
+        logger.info("epd7in3f - toBuffer")
         buf_7color = bytearray(image_7color.tobytes('raw'))
 
         # PIL does not support 4 bit color, so pack the 4 bits of color
         # into a single byte to transfer to the panel
         buf = [0x00] * int(self.width * self.height / 2)
         idx = 0
+        logger.info("epd7in3f - forLoop on buffer")
         for i in range(0, len(buf_7color), 2):
             buf[idx] = (buf_7color[i] << 4) + buf_7color[i+1]
             idx += 1
             
+        logger.info("epd7in3f - return buffer")
         return buf
 
     def display(self, image):
         logger.info("epd7in3f - display")
         self.send_command(0x10)
+        logger.info("epd7in3f - send image")
         self.send_data2(image)
 
+        logger.info("epd7in3f - turnOnDisplay")
         self.TurnOnDisplay()
         
     def Clear(self, color=0x11):

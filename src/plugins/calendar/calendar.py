@@ -38,6 +38,8 @@ class Calendar(BasePlugin):
 
         # Retrieve appearance settings
         event_card_radius = int(settings.get('eventCardRadius', 10))  # Default to 10
+        title_text_size = int(settings.get('titleTextSize', 18))
+        event_text_size = int(settings.get('eventTextSize', 14))
         grid_color = settings.get('gridColor', "#000000")
         event_color = settings.get('eventColor', "#00ff00")
         event_text_color = settings.get('eventTextColor', "#ffffff")
@@ -64,10 +66,8 @@ class Calendar(BasePlugin):
             # Image generation (similar to before)
             img = Image.new('RGBA', device_config.get_resolution(), background_color)
             draw = ImageDraw.Draw(img)
-            title_font_size = 18
-            titleFont = get_font("jost-semibold", title_font_size)
-            text_font_size = 14
-            textFont = get_font("jost-semibold", text_font_size)
+            titleFont = get_font("jost-semibold", title_text_size)
+            textFont = get_font("jost-semibold", event_text_size)
 
             # --- Grid Setup ---
             grid_start_x = 40  # Left margin for time labels
