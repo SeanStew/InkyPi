@@ -3,3 +3,39 @@
     <label for="inputText" class="form-label">iCal URL:</label>
     <input type="text" id="inputText" name="inputText" placeholder="Type something..." required class="form-input">
 </div>
+
+<h3>Display Settings</h3>
+<div class="form-group">
+    <label for="startTime" class="form-label">Start Time (hour):</label>
+    <input type="number" id="startTime" name="startTime" min="0" max="23" value="8">
+</div>
+<div class="form-group">
+    <label for="endTime" class="form-label">End Time (hour):</label>
+    <input type="number" id="endTime" name="endTime" min="1" max="24" value="22">
+</div>
+<div class="form-group">
+    <label for="daysToShow" class="form-label">Days to Show:</label>
+    <input type="number" id="daysToShow" name="daysToShow" min="1" max="7" value="5">
+</div>
+
+<h3>Appearance</h3>
+<div class="form-group">
+    <label for="eventCardRadius" class="form-label">Event Card Radius:</label>
+    <input type="number" id="eventCardRadius" name="eventCardRadius" min="0" value="10">
+</div>
+<div class="form-group">
+    <label for="gridColor" class="form-label">Grid Color:</label>
+    <input type="color" id="gridColor" name="gridColor" value="#000000">
+</div>
+<div class="form-group">
+    <label for="eventColor" class="form-label">Event Color:</label>
+    <input type="color" id="eventColor" name="eventColor" value="#00ff00">
+</div>
+<div class="form-group">
+    <label for="eventTextColor" class="form-label">Event Text Color:</label>
+    <input type="color" id="eventTextColor" name="eventTextColor" value="#ffffff">
+</div>
+<div class="form-group">
+    <label for="legendColor" class="form-label">Legend Color:</label>
+    <input type="color" id="legendColor" name="legendColor" value="#000000">
+</div>
