@@ -66,7 +66,7 @@ class Calendar(BasePlugin):
             title_font_size = 18
             titleFont = get_font("jost-semibold", title_font_size)
             text_font_size = 14
-            textFont = get_font("jost", text_font_size)
+            textFont = get_font("jost-semibold", text_font_size)
 
             # --- Grid Setup ---
             grid_start_x = 40  # Left margin for time labels
@@ -130,7 +130,10 @@ class Calendar(BasePlugin):
                     # Calculate event position and duration
                     day_offset = (start_dt.weekday() - today.weekday()) % DAYS_TO_SHOW  # Adjust for week wrapping
                     x_pos = grid_start_x + day_offset * cell_width
-                    y_pos = grid_start_y + (start_dt.hour - START_TIME) * cell_height  # Adjust for starting at 6 AM
+
+                    # Calculate y_pos with minute precision
+                    y_pos = grid_start_y + (start_dt.hour - START_TIME) * cell_height + (start_dt.minute / 60) * cell_height
+
                     event_duration_hours = (end_dt - start_dt).total_seconds() / 3600
                     event_height = event_duration_hours * cell_height
 
