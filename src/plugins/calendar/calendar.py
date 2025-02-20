@@ -14,6 +14,8 @@ END_TIME = 22
 
 DAYS_TO_SHOW = 5
 
+EVENT_CARD_RADIUS = 10
+
 GRID_COLOR = "#000000"
 EVENT_COLOR = "#00ff00"
 EVENT_TEXT_COLOR = "#ffffff"
@@ -78,15 +80,16 @@ class Calendar(BasePlugin):
 
             # --- Draw Grid Lines ---
             # Vertical lines
-            for i in range(DAYS_TO_SHOW + 1):
+            for i in range(DAYS_TO_SHOW):
                 x_pos = grid_start_x + i * cell_width
                 if (i > 0):
                     draw.line([(x_pos, grid_start_y), (x_pos, grid_start_y + grid_height)], fill=GRID_COLOR, width=1)
 
             # Horizontal lines
-            for i in range(END_TIME - START_TIME + 2):
-                y_pos = grid_start_y + i * cell_height
-                draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill=GRID_COLOR, width=1)
+            for i in range(END_TIME - START_TIME + 1):
+                if (i > 0):
+                    y_pos = grid_start_y + i * cell_height
+                    draw.line([(grid_start_x, y_pos), (grid_start_x + grid_width, y_pos)], fill=GRID_COLOR, width=1)
 
             # --- Date Labels ---
             for i in range(DAYS_TO_SHOW):
@@ -139,11 +142,12 @@ class Calendar(BasePlugin):
 
                     # Draw the event rectangle
                     if START_TIME <= start_dt.hour <= END_TIME or START_TIME <= end_dt.hour <= END_TIME:
-                        draw.rectangle(
+                        draw.rounded_rectangle(
                             [
                                 (x_pos, y_pos),
                                 (x_pos + cell_width, y_pos + event_height)
                             ],
+                            EVENT_CARD_RADIUS,
                             outline=0,
                             fill=EVENT_COLOR
                         )
